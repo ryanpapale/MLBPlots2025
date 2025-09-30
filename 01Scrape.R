@@ -3,24 +3,20 @@ library("rvest")
 
 
 #Get List of Teams Abbreviations for Loop
-teams <- read_html("https://www.baseball-reference.com/teams/#all_teams_active") %>%
-	html_elements("td a") %>%
-	html_attr("href") %>%
-	unique() %>%
-	str_sub(-4, -2) %>%
-	str_replace("ANA", "LAA") %>%
-	str_replace("FLA", "MIA") %>%
-	str_replace("TBD", "TBR") %>%
-	str_replace("OAK", "ATH")
+teams <- read_html("https://www.baseball-reference.com/about/team_IDs.shtml") %>%
+	html_table(header = TRUE) %>%
+	as.data.frame() %>%
+	filter(Last.Year == "Present") %>%
+	select(Team.ID, Full.Team.Name)
 
 
 #Create URLs for Loop
-url <- as.list(paste0("https://www.baseball-reference.com/teams/", teams, "/2025-schedule-scores.shtml"))
-names(url) <- teams
+url <- as.list(paste0("https://www.baseball-reference.com/teams/", teams[["Team.ID"]], "/2025-schedule-scores.shtml"))
+names(url) <- teams[["Full.Team.Name"]]
 
 #Create List for Pages
-html <- vector(mode = "list", length = length(teams))
-names(html) <- teams
+html <- vector(mode = "list", length = nrow(teams))
+names(html) <- teams[["Full.Team.Name"]]
 
 #Scrape Game Data
 for(i in names(url)){

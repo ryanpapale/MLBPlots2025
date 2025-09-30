@@ -4,7 +4,7 @@ library("ggrepel")
 
 #Load Data
 teams <- list.files("Data/") %>%
-	str_sub(1, 3)
+	str_sub(1, -5)
 
 tables <- lapply(teams, function(i){
 	read_csv(file = paste0("Data/", i, ".csv"))
@@ -37,7 +37,7 @@ names(plots) <- teams
 
 #Animate Plots
 gifs <- plots %>%
-	lapply(animate, nframes = 162, duration = 27, end_pause = 30, height = 4, width = 4, units = "in", res = 100)
+	lapply(animate, nframes = 162, duration = 27, end_pause = 30, height = 4, width = 4, units = "in", res = 150)
 
 names(gifs) <- teams
 
